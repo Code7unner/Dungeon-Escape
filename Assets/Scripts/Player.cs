@@ -10,15 +10,17 @@ public class Player : MonoBehaviour
     private bool _resetJump = false;
     [SerializeField]
     private float _speed = 2.5f;
-
-    private PlayerAnimation _anim;
+    private bool _grounded = false;
+    private PlayerAnimation _playerAnim;
+    private SpriteRenderer _playerSprite;
 
     // Start is called before the first frame update
     void Start()
     {
         // assign handle of rigidbody
         _rigid = GetComponent<Rigidbody2D>();
-        _anim = GetComponent<PlayerAnimation>();
+        _playerAnim = GetComponent<PlayerAnimation>();
+        _playerSprite = GetComponentInChildren<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -31,27 +33,54 @@ public class Player : MonoBehaviour
     {
         // horizontal input for left/right
         float move = Input.GetAxisRaw("Horizontal");
+        _grounded = IsGrounded();
+
+        if (move > 0) 
+        {
+            Flip(true);
+        }
+        else if (move < 0) 
+        {
+            Flip(false);
+        }
 
         if (Input.GetKeyDown(KeyCode.Space) && IsGrounded() == true) 
         {
             Debug.Log("Jump!");
             _rigid.velocity = new Vector2(_rigid.velocity.x, _jumpForce);
             StartCoroutine(ResetJumpNeededRoutine());
+            _playerAnim.Jump(true);
         }        
 
         _rigid.velocity = new Vector2(move * _speed, _rigid.velocity.y);
 
-        _anim.Move(move);
+        _playerAnim.Move(move);
+    }
+
+    void Flip(bool faceRight) 
+    {
+        if (faceRight == true) 
+        {
+            _playerSprite.flipX = false;
+        }
+        else 
+        {
+            _playerSprite.flipX = true;
+        }
     }
 
     bool IsGrounded() 
     {
         RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, Vector2.down, 0.6f, 1 << 8);
+        Debug.DrawRay(transform.position, Vector2.down, Color.green);
 
         if (hitInfo.collider != null) 
         {
-            if (_resetJump == false)
+            if (_resetJump == false) 
+            {
+                _playerAnim.Jump(false);
                 return true;
+            }
         }
 
         return false;
