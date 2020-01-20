@@ -2,17 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public abstract class Enemy : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField]
+    protected int health;
+    [SerializeField]
+    protected int speed; 
+    [SerializeField]
+    protected int gems;
+    [SerializeField]
+    protected Transform pointA, pointB;
+    
+    public virtual void Attack() 
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public abstract void Update();
 }
