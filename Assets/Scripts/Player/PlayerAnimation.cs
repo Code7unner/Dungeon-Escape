@@ -2,32 +2,51 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerAnimation : MonoBehaviour
-{
-    private Animator _anim;
-    private Animator _swordAnimation; 
+public class PlayerAnimation : MonoBehaviour {
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        _anim = GetComponentInChildren<Animator>();
-        _swordAnimation = transform.GetChild(1).GetComponent<Animator>();
-    }
+	private Animator m_animator;
+	private Animator m_swordAnim;
 
-    // Update is called once per frame
-    public void Move(float move)
-    {
-        _anim.SetFloat("Move", Mathf.Abs(move));
-    }
+	// Use this for initialization
+	void Start () {
+		m_animator = GetComponentInChildren<Animator>();
+		// Get the animator from a child object not first in the hierarchy
+		m_swordAnim = transform.GetChild(1).GetComponent<Animator>();
+	}
+	
+	public void Move(float speed){
 
-    public void Jump(bool jumping) 
-    {
-        _anim.SetBool("Jumping", jumping);
-    }
+		if (m_animator != null) {
+			m_animator.SetFloat("Speed", Mathf.Abs(speed));
+		}
+	}
 
-    public void Attack() 
-    {
-        _anim.SetTrigger("Attack");
-        _swordAnimation.SetTrigger("SwordAnimation");
-    }
+	public void Jump(bool jumping){
+
+		m_animator.SetBool("Jumping", jumping);
+	}
+
+	public void Attack(){
+
+		if (m_animator != null) {
+			m_animator.SetTrigger("Attack");
+		}
+		if (m_swordAnim != null) {
+			m_swordAnim.SetTrigger("SwordAnimation");
+		}
+	}
+
+	public void Hit(){
+		
+		if (m_animator != null) {
+			m_animator.SetTrigger("Hit");
+		}
+	}
+
+	public void Death(){
+
+		if (m_animator != null) {
+			m_animator.SetTrigger("Death");
+		}
+	}
 }
